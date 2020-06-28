@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import View
 from .forms import OptionForm
-from .models import User, Data, MovieGenre, Genre, Movie
 from django.db import connection
 from django.db.models import F
 from django.db.models import Count, Avg
