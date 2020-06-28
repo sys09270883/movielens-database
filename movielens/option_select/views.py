@@ -18,10 +18,10 @@ class ResultView(View):
         max_rating = form['max_rating'].value()
         sorted_option = form['sorted_option'].value()
 
-
         result = MovieGenre.objects.select_related().annotate(
             titlename=F('mid__titlename'), genre=F('gid__genre')
         )
+
 
         context = {
             'form': form,
@@ -29,4 +29,3 @@ class ResultView(View):
         }
 
         return render(request, 'option_select/result.html', context=context)
-

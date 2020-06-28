@@ -43,15 +43,6 @@ class MovieGenre(models.Model):
         unique_together = (('gid', 'mid'), ('gid', 'mid'),)
 
 
-class Occupation(models.Model):
-    uid = models.IntegerField()
-    occupation = models.CharField(max_length=15, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'occupation'
-
-
 class User(models.Model):
     uid = models.IntegerField(primary_key=True)
     age = models.IntegerField()
