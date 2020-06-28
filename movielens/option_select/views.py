@@ -28,6 +28,7 @@ class ResultView(View):
         form = OptionForm(request.POST)
         genre = form['genre'].value()
         occupation = form['occupation'].value()
+        vote = form['vote'].value()
         min_rating = form['min_rating'].value()
         max_rating = form['max_rating'].value()
         sorted_option = form['sorted_option'].value()
@@ -73,7 +74,7 @@ class ResultView(View):
 
         movie_user_query = """
         INSERT INTO Y(mid, occupation, vote, rating)
-        SELECT Data.mid, User.occupation, COUNT(Data.mid) AS vote, AVG(Data.rating) AS rating
+        SELECT Data.mid, User.occupation, COUNT(Data.mid) AS vote, AVG(Data.rating) AS rating  
         FROM User, Data
         WHERE User.uid = Data.uid and Data.mid in (
         SELECT mid
@@ -82,7 +83,9 @@ class ResultView(View):
         """
         if occupation != "all":
             movie_user_query += "and occupation = '" + occupation + "'"
-        movie_user_query += "GROUP BY Data.mid"
+        movie_user_query += "GROUP BY Data.mid "
+        movie_user_query += "HAVING AVG(Data.rating) >= " + min_rating + " and AVG(Data.rating) <= " + max_rating
+        movie_user_query += " and COUNT(Data.mid) >= " + vote
 
         drop_Z_query = """
         DROP TABLE IF EXISTS Z;
@@ -112,6 +115,18 @@ class ResultView(View):
         FROM X, Y, Z
         WHERE X.mid = Y.mid and Y.mid = Z.mid
         """
+        if sorted_option == "rating order":
+            final_query += "ORDER BY Y.rating DESC"
+        elif sorted_option == "rating reverse order":
+            final_query += "ORDER BY Y.rating ASC"
+        elif sorted_option == "movie title order":
+            final_query += "ORDER BY Z.titlename ASC"
+        elif sorted_option == "movie title reverse order":
+            final_query += "ORDER BY Z.titlename DESC"
+        elif sorted_option == "voting order":
+            final_query += "ORDER BY Y.vote DESC"
+        elif sorted_option == "voting reverse order":
+            final_query += "ORDER BY Y.vote ASC"
 
         cursor.execute(drop_X_query)
         cursor.execute(create_X_query)
@@ -124,6 +139,7 @@ class ResultView(View):
         cursor.execute(movie_query)
         cursor.execute(final_query)
         conn.commit()
+
         for line in cursor.fetchall():
             result.append(line)
 

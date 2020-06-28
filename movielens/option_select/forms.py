@@ -6,4 +6,4 @@ from .models import Option
 class OptionForm(ModelForm):
     class Meta:
         model = Option
-        fields = ['genre', 'occupation', 'min_rating', 'max_rating', 'sorted_option']
+        fields = ['genre', 'occupation', 'min_rating', 'max_rating', 'sorted_option', 'vote']
