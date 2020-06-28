@@ -41,14 +41,14 @@ class ResultView(View):
 
         create_X_query = """
         CREATE TEMPORARY TABLE IF NOT EXISTS X (
-        mid INT,
+        mid INT PRIMARY KEY,
         genre VARCHAR(15) NOT NULL,
-        PRIMARY KEY(mid, genre)
+        UNIQUE KEY(mid)
         );
         """
 
         movie_genre_query = """
-        INSERT INTO X(mid, genre)
+        INSERT IGNORE INTO X(mid, genre)
         SELECT Movie_Genre.mid, genre
         FROM Genre, Movie_Genre
         WHERE Genre.gid = Movie_Genre.gid and Movie_Genre.mid in (
