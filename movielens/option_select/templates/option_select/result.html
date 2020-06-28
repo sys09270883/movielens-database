@@ -53,17 +53,19 @@
                     <br>
                     <tr align="center">
                         <th width="5%">ID</th>
-                        <th width="65%">제목</th>
-                        <th width="20%">장르</th>
+                        <th width="60%">제목</th>
+                        <th width="10%">장르</th>
+                        <th width="10%">투표</th>
                         <th width="10%">별점</th>
                     </tr>
 
                     {% for i in result %}
                     <tr>
-                        <td width="5%" align="center">{{ i.mid }}</td>
-                        <td width="65%">{{ i.titlename }}</td>
-                        <td width="20%">{{ i.genre }}</td>
-                        <td width="10%">{{ i.rating }}</td>
+                        <td width="5%" align="center">{{ i.0 }}</td>
+                        <td width="60%">{{ i.1 }}</td>
+                        <td width="10%">{{ i.2 }}</td>
+                        <td width="10%" align="center">{{ i.4 }}</td>
+                        <td width="10%" align="center">{{ i.5|floatformat:2 }}</td>
                     </tr>
                     {% endfor %}
                 </table>

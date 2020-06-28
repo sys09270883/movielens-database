@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Data(models.Model):
-    mid = models.OneToOneField('Movie', models.DO_NOTHING, db_column='mid', primary_key=True)
+    mid = models.OneToOneField('Movie', models.DO_NOTHING, db_column='mid', primary_key=True, related_name="related_mid_uid")
     uid = models.ForeignKey('User', models.DO_NOTHING, db_column='uid')
     rating = models.IntegerField()
     timestamp = models.DateTimeField()
@@ -35,7 +35,7 @@ class Movie(models.Model):
 
 class MovieGenre(models.Model):
     gid = models.OneToOneField(Genre, models.DO_NOTHING, db_column='gid', primary_key=True)
-    mid = models.ForeignKey(Movie, models.DO_NOTHING, db_column='mid')
+    mid = models.ForeignKey(Movie, models.DO_NOTHING, db_column='mid', related_name="related_mid_gid")
 
     class Meta:
         managed = False
