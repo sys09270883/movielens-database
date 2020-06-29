@@ -39,18 +39,16 @@ class ResultView(View):
         CREATE TEMPORARY TABLE IF NOT EXISTS X (
         mid INT PRIMARY KEY,
         genre VARCHAR(15) NOT NULL,
+        titlename VARCHAR(100) NOT NULL,
         UNIQUE KEY(mid)
         );
         """
 
         movie_genre_query = """
-        INSERT IGNORE INTO X(mid, genre)
-        SELECT Movie_Genre.mid, genre
-        FROM Genre, Movie_Genre
-        WHERE Genre.gid = Movie_Genre.gid and Movie_Genre.mid in (
-        SELECT mid
-        FROM Movie
-        )
+        INSERT IGNORE INTO X(mid, genre, titlename)
+        SELECT Movie.mid, Genre.genre, Movie.titlename
+        FROM Genre, Movie
+        WHERE Genre.mid = Movie.mid
         """
         if genre != "all":
             movie_genre_query += "and genre = '" + genre + "'"
@@ -83,42 +81,19 @@ class ResultView(View):
         movie_user_query += "HAVING AVG(Data.rating) >= " + min_rating + " and AVG(Data.rating) <= " + max_rating
         movie_user_query += " and COUNT(Data.mid) >= " + vote
 
-        drop_Z_query = """
-        DROP TABLE IF EXISTS Z;
-        """
-
-        create_Z_query = """
-        CREATE TEMPORARY TABLE IF NOT EXISTS Z (
-        mid INT,
-        gid INT,
-        titlename VARCHAR(100),
-        PRIMARY KEY(mid, gid)
-        );
-        """
-
-        movie_query = """
-        INSERT INTO Z(mid, gid, titlename)
-        SELECT Movie_Genre.mid, Movie_Genre.gid, Movie.titlename
-        FROM Movie, Movie_Genre
-        WHERE Movie.mid = Movie_Genre.mid and Movie_Genre.gid in (
-        SELECT gid
-        FROM Genre
-        )
-        """
-
         final_query = """
-        SELECT DISTINCT(X.mid), Z.titlename, X.genre, Y.occupation, Y.vote, Y.rating
-        FROM X, Y, Z
-        WHERE X.mid = Y.mid and Y.mid = Z.mid
+        SELECT DISTINCT(X.mid), X.titlename, X.genre, Y.occupation, Y.vote, Y.rating
+        FROM X, Y
+        WHERE X.mid = Y.mid
         """
         if sorted_option == "rating order":
             final_query += "ORDER BY Y.rating DESC"
         elif sorted_option == "rating reverse order":
             final_query += "ORDER BY Y.rating ASC"
         elif sorted_option == "movie title order":
-            final_query += "ORDER BY Z.titlename ASC"
+            final_query += "ORDER BY X.titlename ASC"
         elif sorted_option == "movie title reverse order":
-            final_query += "ORDER BY Z.titlename DESC"
+            final_query += "ORDER BY X.titlename DESC"
         elif sorted_option == "voting order":
             final_query += "ORDER BY Y.vote DESC"
         elif sorted_option == "voting reverse order":

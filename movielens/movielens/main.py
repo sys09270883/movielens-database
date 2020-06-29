@@ -47,23 +47,25 @@ def insert_user():
     print(" # Insert user")
 
 
-def insert_genre():
-    qry = "INSERT IGNORE INTO `Genre`(`gid`, `genre`) VALUES (%s, %s)"
-    genre_list = []
+def gid_to_genre():
+    g2g = []
 
     for line in genre.iterrows():
-        genre_list.append((line[1][1], line[1][0]))
-    cursor.executemany(qry, genre_list)
-    conn.commit()
-    print(" # Insert genre")
+        g2g.append(line[1][0])
+
+    print(" # Load gid to genre list")
+    return g2g
+
 
 
 def insert_movie():
+    g2g = gid_to_genre()
     movie_qry = "INSERT IGNORE INTO `Movie`(`mid`, `titleName`, `releaseDate`, `IMDbUrl`) VALUES (%s, %s, %s, %s)"
     movie_list = []
-    genre_qry = "INSERT IGNORE INTO `Movie_Genre`(`gid`, `mid`) VALUES (%s, %s)"
+    genre_qry = "INSERT IGNORE INTO `Genre`(`mid`, `genre`) VALUES (%s, %s)"
     genre_list = []
     movie_idx = 1
+    tot_genre_cnt = 0
 
     for line in item.iterrows():
         mid = int(line[1][0])
@@ -79,9 +81,11 @@ def insert_movie():
 
         for i in range(5, len(line[1])):
             if line[1][i] == 1:
-                genre_list.append((i - 5, movie_idx))
+                genre_list.append((int(movie_idx), str(g2g[i - 5])))
+                tot_genre_cnt += 1
         movie_idx += 1
 
+    print(" # total genre table count: " + str(tot_genre_cnt))
     cursor.executemany(movie_qry, movie_list)
     cursor.executemany(genre_qry, genre_list)
     conn.commit()
@@ -90,10 +94,7 @@ def insert_movie():
 
 create_table()
 insert_user()
-insert_genre()
 insert_movie()
 insert_data()
-
-
 cursor.close()
 conn.close()
