@@ -45,12 +45,9 @@ class ResultView(View):
 
         movie_genre_query = """
         INSERT IGNORE INTO X(mid, genre)
-        SELECT Movie_Genre.mid, genre
-        FROM Genre, Movie_Genre
-        WHERE Genre.gid = Movie_Genre.gid and Movie_Genre.mid in (
-        SELECT mid
-        FROM Movie
-        )
+        SELECT Movie.mid, Genre.genre
+        FROM Genre, Movie
+        WHERE Genre.mid = Movie.mid
         """
         if genre != "all":
             movie_genre_query += "and genre = '" + genre + "'"
@@ -90,20 +87,15 @@ class ResultView(View):
         create_Z_query = """
         CREATE TEMPORARY TABLE IF NOT EXISTS Z (
         mid INT,
-        gid INT,
         titlename VARCHAR(100),
-        PRIMARY KEY(mid, gid)
+        PRIMARY KEY(mid)
         );
         """
 
         movie_query = """
-        INSERT INTO Z(mid, gid, titlename)
-        SELECT Movie_Genre.mid, Movie_Genre.gid, Movie.titlename
-        FROM Movie, Movie_Genre
-        WHERE Movie.mid = Movie_Genre.mid and Movie_Genre.gid in (
-        SELECT gid
-        FROM Genre
-        )
+        INSERT INTO Z(mid, titlename)
+        SELECT Movie.mid, Movie.titlename
+        FROM Movie
         """
 
         final_query = """

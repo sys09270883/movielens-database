@@ -22,21 +22,13 @@ def makeQuery():
         );
     """, """
         CREATE TABLE IF NOT EXISTS `Genre` (
-            `gid`	INT	NOT NULL PRIMARY KEY,
-            `genre`	VARCHAR(12)	NOT NULL,
-            UNIQUE KEY(`gid`)
-        );
-    """, """
-        CREATE TABLE IF NOT EXISTS `Movie_Genre` (
-            `gid`	INT	NOT NULL,
             `mid`	INT	NOT NULL,
-            PRIMARY KEY(`gid`, `mid`),
-            FOREIGN KEY(`gid`) REFERENCES `Genre`(`gid`)
-                ON UPDATE CASCADE,
+            `genre`	VARCHAR(20)	NOT NULL,
+            PRIMARY KEY(`mid`, `genre`),
             FOREIGN KEY(`mid`) REFERENCES `Movie`(`mid`)
                 ON UPDATE CASCADE,
-            UNIQUE KEY(`gid`, `mid`)
-        );    
+            UNIQUE KEY(`mid`, `genre`)
+        );
     """, """
         CREATE TABLE IF NOT EXISTS `Data` (
             `uid`	INT	NOT NULL,
