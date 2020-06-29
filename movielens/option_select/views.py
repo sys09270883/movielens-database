@@ -2,9 +2,6 @@ from django.shortcuts import render
 from django.views.generic import View
 from .forms import OptionForm
 from django.db import connection
-from django.db.models import F
-from django.db.models import Count, Avg
-from django.db.models import Subquery
 from itertools import chain
 import pymysql
 
