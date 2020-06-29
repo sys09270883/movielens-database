@@ -65,6 +65,7 @@ def insert_movie():
     genre_qry = "INSERT IGNORE INTO `Genre`(`mid`, `genre`) VALUES (%s, %s)"
     genre_list = []
     movie_idx = 1
+    tot_genre_cnt = 0
 
     for line in item.iterrows():
         mid = int(line[1][0])
@@ -81,8 +82,10 @@ def insert_movie():
         for i in range(5, len(line[1])):
             if line[1][i] == 1:
                 genre_list.append((int(movie_idx), str(g2g[i - 5])))
+                tot_genre_cnt += 1
         movie_idx += 1
 
+    print(" # total genre table count: " + str(tot_genre_cnt))
     cursor.executemany(movie_qry, movie_list)
     cursor.executemany(genre_qry, genre_list)
     conn.commit()
