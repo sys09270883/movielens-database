@@ -105,9 +105,6 @@ class ResultView(View):
         cursor.execute(drop_Y_query)
         cursor.execute(create_Y_query)
         cursor.execute(movie_user_query)
-        cursor.execute(drop_Z_query)
-        cursor.execute(create_Z_query)
-        cursor.execute(movie_query)
         cursor.execute(final_query)
         conn.commit()
 
